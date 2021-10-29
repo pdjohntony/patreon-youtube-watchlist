@@ -12,11 +12,11 @@ pip install -r requirements.txt
 ```
 3. Configure your environment variables:
 ```ini
-	PATREON_RSS_URL
-	PATREON_RSS_PARSE_AMOUNT (optional, defaults to 10)
-	YT_PLAYLIST_ID
-	TELEGRAM_BOT_TOKEN (optional)
-	TELEGRAM_CHAT_ID (optional)
+PATREON_RSS_URL
+PATREON_RSS_PARSE_AMOUNT (optional, defaults to 10)
+YT_PLAYLIST_ID
+TELEGRAM_BOT_TOKEN (optional, used for error alerts)
+TELEGRAM_CHAT_ID (optional)
 ```
 4. Obtain a YouTube OAuth Token
 You'll need to run this first from a GUI capable system the first time. A browser will open and you must login to your google account and authorize the app. Once thats done it will generate a `youtube_token.pickle` file. You can then copy and paste this file to another system.
@@ -31,5 +31,5 @@ To run automatically every 30 minutes setup a cron job:
 
 ```bash
 crontab -e
-0,30 * * * * (cd <script-location> && /usr/bin/python3 app.py)
+0,30 * * * * (cd /home/[user]/[script-folder] && /usr/bin/python3 app.py)
 ```
