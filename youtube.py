@@ -47,12 +47,16 @@ class youtube:
 				logger.info("Loading Credentials From Pickle File...")
 				with open(token_pickle_file, "rb") as token:
 					credentials = pickle.load(token)
+					# pprint(vars(credentials))
 			
 			# If there are no valid credentials available, then either refresh the token or log in.
 			if not credentials or not credentials.valid:
 				if credentials and credentials.expired and credentials.refresh_token:
 					logger.info('Refreshing YouTube Access Token...')
 					credentials.refresh(Request())
+					with open(token_pickle_file, 'wb') as f:
+						logger.info('Saving refreshed YouTube Token...')
+						pickle.dump(credentials, f)
 				else:
 					logger.info('Fetching New YouTube Token...')
 					logger.info("You cannot do this via CLI, you must run this from a GUI capable system.")
