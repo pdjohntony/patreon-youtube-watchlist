@@ -8,7 +8,6 @@ Patreon YouTube Watchlist
 Environment Variables:
 	PATREON_RSS_URL
 	PATREON_RSS_PARSE_AMOUNT (optional, defaults to 10)
-	YT_API_KEY (optional, for testing)
 	YT_PLAYLIST_ID
 	TELEGRAM_BOT_TOKEN (optional, used for error alerts)
 	TELEGRAM_CHAT_ID (optional)
@@ -175,7 +174,6 @@ if __name__ == "__main__":
 	try:
 		load_dotenv()
 		rss_url          = os.environ['PATREON_RSS_URL']
-		yt_api_key       = os.environ['YT_API_KEY']
 		yt_playlist_id   = os.environ['YT_PLAYLIST_ID']
 		rss_parse_amount = int(os.getenv('PATREON_RSS_PARSE_AMOUNT', 10)) # Defaults to 10
 		ytid_pattern     = r'(?:https?:\/\/)?(?:[0-9A-Z-]+\.)?(?:youtube|youtu|youtube-nocookie)\.(?:com|be)\/(?:watch\?v=|watch\?.+&v=|embed\/|v\/|.+\?v=)?([^&=\n%\?]{11})'
