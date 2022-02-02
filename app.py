@@ -8,8 +8,9 @@ Patreon YouTube Watchlist
 Environment Variables:
 	PATREON_RSS_URL
 	PATREON_RSS_PARSE_AMOUNT (optional, defaults to 10)
+	YT_API_KEY (optional, for testing)
 	YT_PLAYLIST_ID
-	TELEGRAM_BOT_TOKEN (optional)
+	TELEGRAM_BOT_TOKEN (optional, used for error alerts)
 	TELEGRAM_CHAT_ID (optional)
 
 """
@@ -146,16 +147,16 @@ def main():
 	# Compare and add new videos to playlist
 	for index, pEntry in enumerate(new_patreon_vids):
 		logger.info(f"Entry #{index+1} - {pEntry['published']}")
-		logger.info(f"	{pEntry['title']}")
-		logger.info(f"	Video IDs found: {pEntry['ytIDs']}")
+		logger.info(f"  {pEntry['title']}")
+		logger.info(f"    Video IDs found: {pEntry['ytIDs']}")
 
 		for vID in pEntry['ytIDs']:
 			if vID not in videoHistory:
-				logger.info(f"	Adding new video to playlist '{vID}'...")
+				logger.info(f"      Adding new video to playlist '{vID}'...")
 				youtube.add_to_playlist(yt_playlist_id, vID)
 				new_watchlist_vids.append(vID)
 			else:
-				logger.info(f"	Skipping old video '{vID}'...")
+				logger.info(f"      Skipping old video '{vID}'...")
 	
 	# Save history
 	videoHistory.extend(new_watchlist_vids)
@@ -167,13 +168,14 @@ def main():
 	logger.debug("FINISHED")
 
 def test():
-	current_pl_vids = youtube.get_playlist_videos(yt_playlist_id)
+	print(f"youtube.get_playlist_videos({yt_playlist_id})={youtube.get_playlist_videos(yt_playlist_id)}")
 
 if __name__ == "__main__":
 	# Load Settings
 	try:
 		load_dotenv()
 		rss_url          = os.environ['PATREON_RSS_URL']
+		yt_api_key       = os.environ['YT_API_KEY']
 		yt_playlist_id   = os.environ['YT_PLAYLIST_ID']
 		rss_parse_amount = int(os.getenv('PATREON_RSS_PARSE_AMOUNT', 10)) # Defaults to 10
 		ytid_pattern     = r'(?:https?:\/\/)?(?:[0-9A-Z-]+\.)?(?:youtube|youtu|youtube-nocookie)\.(?:com|be)\/(?:watch\?v=|watch\?.+&v=|embed\/|v\/|.+\?v=)?([^&=\n%\?]{11})'
@@ -187,6 +189,19 @@ if __name__ == "__main__":
 	logger.debug("STARTING APP")
 	logger.debug("========================================")
 
-	youtube = youtube()
-
-	main()
+	try:
+		usage_help = "\nUsage: python app.py [OPTION]\n\nOptional Arguments:\n  -t, -testyoutube     test youtube auth and api by requesting playlist items\n  -h, -help        display this help and exit"
+		
+		if   sys.argv[1] == "-t" or sys.argv[1] == "-testyoutube":
+			youtube = youtube()
+			test()
+		elif sys.argv[1] == "-h" or sys.argv[1] == "-help":
+			print(usage_help)
+			sys.exit(0)
+		else:
+			print(f"\n{sys.argv[1]} is not a valid option")
+			print(usage_help)
+			sys.exit(1)
+	except IndexError as e:
+		youtube = youtube()
+		main()

@@ -57,6 +57,7 @@ class youtube:
 					with open(token_pickle_file, 'wb') as f:
 						logger.info('Saving refreshed YouTube Token...')
 						pickle.dump(credentials, f)
+						# pprint(vars(credentials))
 				else:
 					logger.info('Fetching New YouTube Token...')
 					logger.info("You cannot do this via CLI, you must run this from a GUI capable system.")
@@ -67,6 +68,7 @@ class youtube:
 					with open(token_pickle_file, 'wb') as f:
 						logger.info('Saving YouTube Token for Future Use...')
 						pickle.dump(credentials, f)
+						# pprint(vars(credentials))
 
 			self.youtube = googleapiclient.discovery.build(api_service_name, api_version, credentials=credentials)
 		except Exception as e:
